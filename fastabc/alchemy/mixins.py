@@ -3,7 +3,7 @@ import datetime
 from sqlalchemy import func, Identity
 from sqlalchemy.orm import mapped_column, Mapped
 
-from .base import SkeletonBase
+from .base import DeclarativeBase
 
 
 # https://docs.sqlalchemy.org/en/20/core/defaults.html
@@ -11,7 +11,7 @@ from .base import SkeletonBase
 # https://docs.sqlalchemy.org/en/20/orm/declarative_tables.html#orm-declarative-mapped-column-type-map-pep593
 
 
-class MixinBase(SkeletonBase):
+class MixinBase(DeclarativeBase):
     __abstract__ = True
 
 

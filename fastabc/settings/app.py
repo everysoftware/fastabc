@@ -1,13 +1,11 @@
 from typing import Literal
 
-from pydantic import Field
-
-from fastabc import SkeletonModel
+from pydantic import Field, BaseModel
 
 
-class AppModel(SkeletonModel):
+class AppModel(BaseModel):
     title: str = "Test"
-    version: str = "1.0.0"
+    version: str = "0.1.0"
     env: Literal["dev", "prod", "test"] = "dev"
     debug: bool = False
 

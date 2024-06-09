@@ -15,7 +15,7 @@ class AbstractUOW(ABC):
 
     @abstractmethod
     async def open(self) -> None:
-        await self.on_open()
+        pass
 
     @abstractmethod
     async def close(self, type_: Any, value: Any, traceback: Any) -> None:
@@ -47,11 +47,10 @@ class FakeUOW(AbstractUOW, ABC):
 
     async def open(self) -> None:
         self._is_opened = True
-        await super().open()
+        await self.on_open()
 
     async def close(self, type_: Any, value: Any, traceback: Any) -> None:
         self._is_opened = False
-        await super().close(type_, value, traceback)
 
     async def commit(self) -> None:
         pass

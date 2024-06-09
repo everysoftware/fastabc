@@ -1,11 +1,11 @@
-from .db import DatabaseServerDsn, DatabaseDsn
+from .db import DbServerDsn, DbDsn
 
 
-class MysqlServerDsn(DatabaseServerDsn):
+class MysqlServerDsn(DbServerDsn):
     dialect: str = "mysql"
     sync_driver: str = "mysql"
     async_driver: str = "aiomysql"
 
 
-class MysqlDsn(MysqlServerDsn, DatabaseDsn):
+class MysqlDsn(MysqlServerDsn, DbDsn):
     pass

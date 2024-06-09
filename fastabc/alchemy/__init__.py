@@ -1,16 +1,14 @@
-from .base import SkeletonBase
+from .base import DeclarativeBase
 from .mixins import AlchemyEntity, HasTimestamp, MixinBase
 from .repository import AlchemyRepository
-from .testing import TestUser
 from .uow import AlchemyUOW
 from .service import AlchemyService
 
 __all__ = [
-    "SkeletonBase",
+    "DeclarativeBase",
     "AlchemyEntity",
     "AlchemyRepository",
     "HasTimestamp",
-    "TestUser",
     "MixinBase",
     "AlchemyUOW",
     "AlchemyService",

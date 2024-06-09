@@ -1,11 +1,7 @@
-from .openapi import (
-    OpenAPIResponseType,
-    StringErrorResponse,
-    ResponseGroup,
-)
+from .schemas import ErrorDetail
+from .openapi import get_multi_response
 
 __all__ = [
-    "OpenAPIResponseType",
-    "StringErrorResponse",
-    "ResponseGroup",
+    "ErrorDetail",
+    "get_multi_response",
 ]

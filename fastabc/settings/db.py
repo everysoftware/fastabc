@@ -1,11 +1,9 @@
-from abc import ABC
-
 from sqlalchemy import URL
 
-from .url import ConnectionUrl
+from .url import Dsn
 
 
-class DatabaseServerDsn(ConnectionUrl, ABC):
+class DbServerDsn(Dsn):
     dialect: str
     sync_driver: str
     async_driver: str
@@ -22,7 +20,7 @@ class DatabaseServerDsn(ConnectionUrl, ABC):
         ).render_as_string(hide_password=False)
 
 
-class DatabaseDsn(DatabaseServerDsn):
+class DbDsn(DbServerDsn):
     db: str
 
     @property

@@ -1,4 +1,3 @@
-from .base import SkeletonModel
 from .mixins import (
     HasTimestamp,
     SoftDeletable,
@@ -19,5 +18,4 @@ __all__ = [
     "HasID",
     "MixinModel",
     "EntityModel",
-    "SkeletonModel",
 ]

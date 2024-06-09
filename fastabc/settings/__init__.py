@@ -1,17 +1,17 @@
 from .app import AppModel, APIModel, BotModel
-from .db import DatabaseServerDsn, DatabaseDsn
+from .db import DbServerDsn, DbDsn
 from .env import load_env
 from .pg import PgServerDsn, PostgresDsn
 from .mysql import MysqlServerDsn, MysqlDsn
-from .url import ConnectionUrl
+from .url import Dsn
 from .redis import RedisDsn
 
 __all__ = [
-    "DatabaseServerDsn",
+    "DbServerDsn",
     "PgServerDsn",
-    "DatabaseDsn",
+    "DbDsn",
     "PostgresDsn",
-    "ConnectionUrl",
+    "Dsn",
     "AppModel",
     "APIModel",
     "BotModel",

@@ -1,11 +1,9 @@
-from abc import ABC
-
 from pydantic import SecretStr
 
-from fastabc.settings import ConnectionUrl
+from fastabc.settings import Dsn
 
 
-class RedisDsn(ConnectionUrl, ABC):
+class RedisDsn(Dsn):
     host: str
     port: int
     username: str = "default"

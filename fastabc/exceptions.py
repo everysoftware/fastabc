@@ -2,5 +2,5 @@ class FastABCException(Exception):
     pass
 
 
-class SettingsNotFound(FastABCException):
+class EnvironmentNotFound(FastABCException):
     pass

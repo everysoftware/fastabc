@@ -1,11 +1,11 @@
-from .db import DatabaseServerDsn, DatabaseDsn
+from .db import DbServerDsn, DbDsn
 
 
-class PgServerDsn(DatabaseServerDsn):
+class PgServerDsn(DbServerDsn):
     dialect: str = "postgresql"
     sync_driver: str = "psycopg2"
     async_driver: str = "asyncpg"
 
 
-class PostgresDsn(PgServerDsn, DatabaseDsn):
+class PostgresDsn(PgServerDsn, DbDsn):
     pass

@@ -4,7 +4,7 @@ from typing import Any
 
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
-from fastabc.abc import AbstractUOW
+from fastabc.interfaces import AbstractUOW
 
 
 class MultipleAlchemyUOW(AbstractUOW):

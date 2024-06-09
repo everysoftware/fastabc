@@ -1,9 +1,10 @@
 [tool.poetry]
 name = "fastabc"
-version = "0.1.0"
-description = "Ready-made API Abstractions: basic models, repositories, unit of work and other stuff."
+version = "0.1.6"
+description = "Customizable integration with SQLAlchemy"
 authors = ["Ivan Stasevich <pravitel2015ify@gmail.com>"]
 readme = "README.md"
+license = "MIT"
 classifiers = [
     "Intended Audience :: Information Technology",
     "Intended Audience :: System Administrators",
@@ -30,10 +31,12 @@ classifiers = [
     "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
     "Topic :: Internet :: WWW/HTTP",
 ]
+packages = [{ include = "fastabc" }]
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.10.0"
 ruff = "^0.4.8"
+pre-commit = "^3.7.1"
 
 [project.urls]
 Homepage = "https://github.com/everysoftware/fastabc"
@@ -65,6 +68,8 @@ docstring-code-format = true
 
 [tool.mypy]
 strict = true
+pretty = true
+plugins = "pydantic.mypy"
 
 [[tool.mypy.overrides]]
 module = "*.*"

@@ -1,4 +1,3 @@
-from abc import ABC
 from typing import TypeVar, Generic, Sequence, Any, cast
 
 from sqlalchemy import (
@@ -15,18 +14,18 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import InstrumentedAttribute
 from sqlalchemy.orm.interfaces import ORMOption
 
-from .base import SkeletonBase
-from ..abc.repository import AbstractRepository
+from .base import DeclarativeBase
+from ..interfaces.repository import AbstractRepository
 from ..schemas import PageParams
 
-Model = TypeVar("Model", bound=SkeletonBase)
+Model = TypeVar("Model", bound=DeclarativeBase)
 IdLike = Any | tuple[Any, ...]
 WhereClause = Sequence[BinaryExpression[bool] | ColumnElement[bool]]
 OrderBy = Sequence[UnaryExpression[Any] | ColumnElement[Any]]
 T = TypeVar("T")
 
 
-class AlchemyRepository(AbstractRepository, Generic[Model], ABC):
+class AlchemyRepository(AbstractRepository, Generic[Model]):
     """Repository for SQLAlchemy models."""
 
     model_type: type[Model]

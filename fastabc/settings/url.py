@@ -1,12 +1,9 @@
-from abc import ABC
 from typing import Any
 
-from pydantic import model_validator, SecretStr
-
-from fastabc import SkeletonModel
+from pydantic import model_validator, SecretStr, BaseModel
 
 
-class ConnectionUrl(SkeletonModel, ABC):
+class Dsn(BaseModel):
     host: str
     port: int
     username: str

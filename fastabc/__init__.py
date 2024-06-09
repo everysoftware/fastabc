@@ -1,17 +1,26 @@
-"""Ready-made API Abstractions: basic models, repositories, unit of work and other stuff."""
+"""Customizable integration with SQLAlchemy"""
 
-__version__ = "0.1.0"
+__version__ = "0.1.6"
 
-from .alchemy import SkeletonBase, MixinBase, AlchemyEntity
-from .schemas import SkeletonModel, MixinModel, Page, PageParams, EntityModel
+from .alchemy import (
+    DeclarativeBase,
+    MixinBase,
+    AlchemyEntity,
+    AlchemyUOW,
+    AlchemyRepository,
+    AlchemyService,
+)
+from .schemas import MixinModel, Page, PageParams, EntityModel
 
 __all__ = [
-    "SkeletonModel",
-    "SkeletonBase",
+    "DeclarativeBase",
     "MixinModel",
     "MixinBase",
     "Page",
     "PageParams",
     "AlchemyEntity",
     "EntityModel",
+    "AlchemyRepository",
+    "AlchemyUOW",
+    "AlchemyService",
 ]

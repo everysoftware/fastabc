@@ -1,103 +1,44 @@
-from abc import ABC
-from typing import Any, Annotated
+from typing import Any, Iterable
 
-from pydantic import BaseModel, Field
-
-# https://fastapi.tiangolo.com/how-to/extending-openapi/
-OpenAPIResponseType = dict[int | str, dict[str, Any]]
+from fastabc.api.schemas import ErrorDetail
 
 
-class StringErrorResponse(BaseModel):
-    detail: Annotated[str, Field(min_length=1, max_length=1024)]
+def get_multi_response(examples: Iterable[ErrorDetail]) -> dict[str, Any]:
+    """
+    Generate a multi-response object for OpenAPI.
 
+    Usage::
 
-class ResponseGroup(ABC):
-    @classmethod
-    def create(cls) -> OpenAPIResponseType:
-        """400 Bad Request, 403 Forbidden."""
-        return {
-            400: {
-                "description": "Already exists",
-                "model": StringErrorResponse,
-            },
-            403: {
-                "description": "Access denied",
-                "model": StringErrorResponse,
-            },
-        }
+        class AlreadyExists(ErrorDetail):
+            code = "ALREADY_EXISTS"
+            msg = "User with this email already exists"
 
-    @classmethod
-    def create_many(cls) -> OpenAPIResponseType:
-        """403 Forbidden."""
-        return {
-            403: {
-                "description": "Access denied",
-                "model": StringErrorResponse,
-            }
-        }
+        class InvalidOrganization(ErrorDetail):
+            code = "INVALID_ORGANIZATION"
+            msg = "No such organization"
 
-    @classmethod
-    def get(cls) -> OpenAPIResponseType:
-        """403 Forbidden, 404 Not Found"""
-        return {
-            404: {
-                "description": "Not found",
-                "model": StringErrorResponse,
-            },
-            403: {
-                "description": "Access denied",
-                "model": StringErrorResponse,
-            },
-        }
-
-    @classmethod
-    def get_many(cls) -> OpenAPIResponseType:
-        """403 Forbidden."""
-        return {
-            403: {
-                "description": "Access denied",
-                "model": StringErrorResponse,
-            }
-        }
-
-    @classmethod
-    def update(cls) -> OpenAPIResponseType:
-        """403 Forbidden, 404 Not Found."""
-        return {
-            404: {
-                "description": "Not found",
-                "model": StringErrorResponse,
-            },
-            403: {
-                "description": "Access denied",
-                "model": StringErrorResponse,
-            },
-        }
-
-    @classmethod
-    def delete(cls) -> OpenAPIResponseType:
-        """403 Forbidden, 404 Not Found"""
-        return {
-            404: {
-                "description": "Not found",
-                "model": StringErrorResponse,
-            },
-            403: {
-                "description": "Access denied",
-                "model": StringErrorResponse,
-            },
-        }
-
-    @classmethod
-    def multi_response(cls, examples: dict[str | int, str]) -> dict[str, Any]:
-        return {
-            "content": {
-                "application/json": {
-                    "examples": {
-                        code: {"summary": summary, "value": {"detail": code}}
-                        for code, summary in examples.items()
+        @router.post("/", responses={
+            ...,  # Other responses
+            status.HTTP_400_BAD_REQUEST: get_multi_response(AlreadyExists(), InvalidOrganization())
+        )
+        def create_user(...) -> UserRead:
+            if users.exists(user.email):
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=AlreadyExists()))
+            if not organizations.exists(user.organization_id):
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=InvalidOrganization())
+            ...
+    """  # noqa: E501
+    return {
+        "content": {
+            "application/json": {
+                "examples": {
+                    example.code: {
+                        "summary": example.msg,
+                        "value": {"detail": example.model_dump()},
                     }
+                    for example in examples
                 }
-            },
-            "model": StringErrorResponse,
-        }
+            }
+        },
+        "model": ErrorDetail,
+    }

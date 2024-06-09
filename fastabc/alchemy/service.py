@@ -1,4 +1,4 @@
-from fastabc.abc import AbstractService
+from fastabc.interfaces import AbstractService
 from fastabc.alchemy import AlchemyUOW
 
 

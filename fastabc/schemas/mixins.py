@@ -1,18 +1,13 @@
 import datetime
-from abc import ABC
 
-from pydantic import Field
-
-from .base import SkeletonModel
+from pydantic import Field, BaseModel
 
 
 # https://docs.pydantic.dev/latest/concepts/models/#abstract-base-classes
 
 
-class MixinModel(SkeletonModel, ABC):
+class MixinModel(BaseModel):
     """Base class for all mixins."""
-
-    pass
 
 
 class HasID(MixinModel):

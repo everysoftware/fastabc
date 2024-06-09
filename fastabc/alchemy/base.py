@@ -4,7 +4,7 @@ from typing import Any, Self
 from pydantic import BaseModel
 from sqlalchemy import BigInteger, inspect, Enum as SAEnum, MetaData
 from sqlalchemy.orm import (
-    DeclarativeBase,
+    DeclarativeBase as SABase,
 )
 
 type_map = {int: BigInteger, Enum: SAEnum(Enum, native_enum=False)}
@@ -19,7 +19,7 @@ POSTGRES_INDEXES_NAMING_CONVENTION = {
 metadata = MetaData(naming_convention=POSTGRES_INDEXES_NAMING_CONVENTION)
 
 
-class SkeletonBase(DeclarativeBase):
+class DeclarativeBase(SABase):
     type_annotation_map = type_map
     metadata = metadata
 
