@@ -2,7 +2,7 @@ from .base import DeclarativeBase
 from .mixins import (
     AlchemyEntity,
     HasTimestamp,
-    MixinBase,
+    AlchemyMixin,
     SoftDeletable,
     HasID,
 )
@@ -15,7 +15,7 @@ __all__ = [
     "AlchemyEntity",
     "AlchemyRepository",
     "HasTimestamp",
-    "MixinBase",
+    "AlchemyMixin",
     "AlchemyUOW",
     "AlchemyService",
     "SoftDeletable",

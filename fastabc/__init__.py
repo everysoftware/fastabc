@@ -1,10 +1,10 @@
 """Ready-made FastAPI abstractions: repository, unit of work, service etc."""
 
-__version__ = "0.1.7"
+__version__ = "0.1.8"
 
 from .alchemy import (
     DeclarativeBase,
-    MixinBase,
+    AlchemyMixin,
     AlchemyEntity,
     AlchemyUOW,
     AlchemyRepository,
@@ -15,7 +15,7 @@ from .schemas import MixinModel, Page, PageParams, EntityModel
 __all__ = [
     "DeclarativeBase",
     "MixinModel",
-    "MixinBase",
+    "AlchemyMixin",
     "Page",
     "PageParams",
     "AlchemyEntity",

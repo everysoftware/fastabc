@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fastabc"
-version = "0.1.7"
+version = "0.1.8"
 description = "Ready-made FastAPI abstractions: repository, unit of work, service etc."
 authors = ["Ivan Stasevich <pravitel2015ify@gmail.com>"]
 readme = "README.md"
