@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "fastabc"
-version = "0.1.6"
-description = "Customizable integration with SQLAlchemy"
+version = "0.1.7"
+description = "Ready-made FastAPI abstractions: repository, unit of work, service etc."
 authors = ["Ivan Stasevich <pravitel2015ify@gmail.com>"]
 readme = "README.md"
 license = "MIT"
@@ -37,6 +37,7 @@ packages = [{ include = "fastabc" }]
 mypy = "^1.10.0"
 ruff = "^0.4.8"
 pre-commit = "^3.7.1"
+faker = "^25.8.0"
 
 [project.urls]
 Homepage = "https://github.com/everysoftware/fastabc"

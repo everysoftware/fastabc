@@ -1,6 +1,6 @@
-"""Customizable integration with SQLAlchemy"""
+"""Ready-made FastAPI abstractions: repository, unit of work, service etc."""
 
-__version__ = "0.1.6"
+__version__ = "0.1.7"
 
 from .alchemy import (
     DeclarativeBase,
