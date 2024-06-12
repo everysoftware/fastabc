@@ -1,4 +1,4 @@
-from fastabc import AlchemyService
+from onepattern import AlchemyService
 from .models import User
 from .uow import UOW
 

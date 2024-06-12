@@ -1,4 +1,4 @@
-APP_NAME=fastabc
+APP_NAME=onepattern
 
 .PHONY: format
 format:

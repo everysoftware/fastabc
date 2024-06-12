@@ -35,7 +35,7 @@ class AlchemyRepository(AbstractRepository, Generic[Model]):
         self.session = session
 
     def add(self, *instances: Model) -> None:
-        """Add an instance in the session."""
+        """Add instances in the session."""
         self.session.add_all(instances)
 
     async def insert(

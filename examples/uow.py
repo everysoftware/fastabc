@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
-from fastabc import AlchemyUOW
+from onepattern import AlchemyUOW
 from .repositories import UserRepository
 
 

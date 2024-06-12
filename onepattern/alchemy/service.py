@@ -1,5 +1,5 @@
-from fastabc.interfaces import AbstractService
-from fastabc.alchemy import AlchemyUOW
+from onepattern.interfaces import AbstractService
+from onepattern.alchemy import AlchemyUOW
 
 
 class AlchemyService(AbstractService):

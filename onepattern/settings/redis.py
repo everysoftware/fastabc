@@ -1,6 +1,6 @@
 from pydantic import SecretStr
 
-from fastabc.settings import Dsn
+from onepattern.settings import Dsn
 
 
 class RedisDsn(Dsn):

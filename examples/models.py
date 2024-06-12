@@ -3,8 +3,8 @@ from datetime import datetime
 from sqlalchemy import Identity
 from sqlalchemy.orm import Mapped, mapped_column
 
-from fastabc import DeclarativeBase, AlchemyEntity
-from fastabc.alchemy import SoftDeletable, HasID, HasTimestamp
+from onepattern import DeclarativeBase, AlchemyEntity
+from onepattern.alchemy import SoftDeletable, HasID, HasTimestamp
 
 
 # Classic way

@@ -1,6 +1,6 @@
-"""Ready-made FastAPI abstractions: repository, unit of work, service etc."""
+"""Scalable data access patterns for rapid API development, using SQLAlchemy & Pydantic."""
 
-__version__ = "0.1.8"
+__version__ = "0.1.9"
 
 from .alchemy import (
     DeclarativeBase,

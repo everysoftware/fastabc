@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "fastabc"
-version = "0.1.8"
-description = "Ready-made FastAPI abstractions: repository, unit of work, service etc."
+name = "onepattern"
+version = "0.1.9"
+description = "Scalable data access patterns for rapid API development, using SQLAlchemy & Pydantic."
 authors = ["Ivan Stasevich <pravitel2015ify@gmail.com>"]
 readme = "README.md"
 license = "MIT"
@@ -31,7 +31,7 @@ classifiers = [
     "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
     "Topic :: Internet :: WWW/HTTP",
 ]
-packages = [{ include = "fastabc" }]
+packages = [{ include = "onepattern" }]
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.10.0"
@@ -60,8 +60,7 @@ build-backend = "poetry.core.masonry.api"
 fix = true
 indent-width = 4
 line-length = 79
-src = ["src"]
-target-version = "py311"
+target-version = "py312"
 
 [tool.ruff.format]
 docstring-code-format = true

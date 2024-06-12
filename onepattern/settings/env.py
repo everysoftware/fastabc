@@ -3,7 +3,7 @@ from typing import Sequence
 
 from dotenv import load_dotenv
 
-from fastabc.exceptions import EnvironmentNotFound
+from onepattern.exceptions import EnvironmentNotFound
 
 
 def load_env(

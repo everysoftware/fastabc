@@ -1,6 +1,6 @@
-# FastAPI Abstractions
+# OnePattern
 
-Ready-made FastAPI abstractions: repository, unit of work, service etc.
+Scalable data access patterns for rapid API development, using SQLAlchemy & Pydantic.
 
 ## Features
 
@@ -10,11 +10,11 @@ Ready-made FastAPI abstractions: repository, unit of work, service etc.
 - **Intuitive**: Great editor support. Completion everywhere. Less time debugging.
 - **Easy**: Designed to be easy to use and learn. Less time reading docs.
 - **Asynchronous**: Built-in support for async/await.
-- **Use anywhere**: Use it with FastAPI, Aiogram, or any other framework (best with FastAPI).
+- **Use anywhere**: Use it with FastAPI, Aiogram, or any other framework.
 
 ## Requirements
 
-FastAPI Abstractions stands on the shoulders of giants:
+OnePattern stands on the shoulders of giants:
 
 - [SQLAlchemy](https://www.sqlalchemy.org/)
 - [Pydantic](https://pydantic-docs.helpmanual.io/)
@@ -22,7 +22,7 @@ FastAPI Abstractions stands on the shoulders of giants:
 ## Installation
 
 ```bash
-pip install fastabc
+pip install onepattern
 ```
 
 ## Concepts
@@ -41,8 +41,8 @@ from datetime import datetime
 from sqlalchemy import Identity
 from sqlalchemy.orm import Mapped, mapped_column
 
-from fastabc import DeclarativeBase, AlchemyEntity
-from fastabc.alchemy import SoftDeletable, HasID, HasTimestamp
+from onepattern import DeclarativeBase, AlchemyEntity
+from onepattern.alchemy import SoftDeletable, HasID, HasTimestamp
 
 
 # Classic way
@@ -91,7 +91,7 @@ class UserMixins(HasID, HasTimestamp, SoftDeletable):
 ## 2. Repositories
 
 ```python
-from fastabc import AlchemyRepository
+from onepattern import AlchemyRepository
 from .models import User
 
 
@@ -105,7 +105,7 @@ class UserRepository(AlchemyRepository[User]):
 ```python
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
-from fastabc import AlchemyUOW
+from onepattern import AlchemyUOW
 from .repositories import UserRepository
 
 
@@ -125,7 +125,7 @@ uow = UOW(async_session)
 ## 4. Services
 
 ```python
-from fastabc import AlchemyService
+from onepattern import AlchemyService
 from .models import User
 from .uow import UOW
 

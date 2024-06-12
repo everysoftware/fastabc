@@ -1,6 +1,6 @@
 from typing import Any, Iterable
 
-from fastabc.api.schemas import ErrorDetail
+from onepattern.api.schemas import ErrorDetail
 
 
 def get_multi_response(examples: Iterable[ErrorDetail]) -> dict[str, Any]:

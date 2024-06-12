@@ -4,7 +4,7 @@ from typing import Any
 
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
-from fastabc.interfaces import AbstractUOW
+from onepattern.interfaces import AbstractUOW
 
 
 class MultipleAlchemyUOW(AbstractUOW):
@@ -48,13 +48,13 @@ class MultipleAlchemyUOW(AbstractUOW):
 
     """  # noqa: E501
 
-    session_factories: dict[str, async_sessionmaker[AsyncSession]]
+    factories: dict[str, async_sessionmaker[AsyncSession]]
     sessions: dict[str, AsyncSession]
 
     def __init__(
-        self, session_factories: dict[str, async_sessionmaker[AsyncSession]]
+        self, factories: dict[str, async_sessionmaker[AsyncSession]]
     ) -> None:
-        self.session_factories = session_factories
+        self.factories = factories
 
     @property
     def is_opened(self) -> bool:
@@ -65,7 +65,7 @@ class MultipleAlchemyUOW(AbstractUOW):
 
     async def open(self) -> None:
         self.sessions = {
-            name: factory() for name, factory in self.session_factories.items()
+            name: factory() for name, factory in self.factories.items()
         }
 
         for session in self.sessions.values():

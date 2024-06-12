@@ -4,7 +4,7 @@ from typing import Any, cast
 
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
-from fastabc.interfaces import AbstractUOW
+from onepattern.interfaces import AbstractUOW
 
 
 class AlchemyUOW(AbstractUOW):
@@ -28,11 +28,11 @@ class AlchemyUOW(AbstractUOW):
 
     """  # noqa: E501
 
-    session_factory: async_sessionmaker[AsyncSession]
+    factory: async_sessionmaker[AsyncSession]
     session: AsyncSession
 
-    def __init__(self, session_factory: async_sessionmaker[AsyncSession]):
-        self.session_factory = session_factory
+    def __init__(self, factory: async_sessionmaker[AsyncSession]):
+        self.factory = factory
 
     @property
     def is_opened(self) -> bool:
@@ -45,7 +45,7 @@ class AlchemyUOW(AbstractUOW):
         ...
 
     async def open(self) -> None:
-        self.session = self.session_factory()
+        self.session = self.factory()
         await self.session.__aenter__()
         await self.on_open()
 

@@ -11,21 +11,17 @@ from .base import DeclarativeBase
 # https://docs.sqlalchemy.org/en/20/orm/declarative_tables.html#orm-declarative-mapped-column-type-map-pep593
 
 
-class AlchemyMixin(DeclarativeBase):
-    __abstract__ = True
+class AlchemyMixin:
+    pass
 
 
 class HasID(AlchemyMixin):
-    __abstract__ = True
-
     id: Mapped[int] = mapped_column(
         Identity(), primary_key=True, sort_order=-100
     )
 
 
 class HasTimestamp(AlchemyMixin):
-    __abstract__ = True
-
     created_at: Mapped[datetime.datetime] = mapped_column(
         server_default=func.now(), sort_order=100
     )
@@ -36,15 +32,13 @@ class HasTimestamp(AlchemyMixin):
     )
 
 
-class AlchemyEntity(HasID, HasTimestamp):
+class AlchemyEntity(DeclarativeBase, HasID, HasTimestamp):
     __abstract__ = True
 
 
 class SoftDeletable(AlchemyMixin):
-    __abstract__ = True
-
     deleted_at: Mapped[datetime.datetime | None] = mapped_column(
-        nullable=True, sort_order=102
+        sort_order=102
     )
 
     def delete(self) -> None:

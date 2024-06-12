@@ -1,4 +1,4 @@
-from fastabc import AlchemyRepository
+from onepattern import AlchemyRepository
 from .models import User
 
 
