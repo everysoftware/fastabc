@@ -1,6 +1,14 @@
-class OnePatternException(Exception):
+class OPException(Exception):
     pass
 
 
-class EnvironmentNotFound(OnePatternException):
+class OPNoResultFound(OPException):
+    pass
+
+
+class OPMultipleResultsFound(OPException):
+    pass
+
+
+class OPValueError(OPException, ValueError):
     pass

@@ -1,6 +1,6 @@
 from sqlalchemy import URL
 
-from .url import Dsn
+from .dsn import Dsn
 
 
 class DbServerDsn(Dsn):

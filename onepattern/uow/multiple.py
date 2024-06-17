@@ -4,12 +4,12 @@ from typing import Any
 
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
-from onepattern.interfaces import AbstractUOW
+from .abstract import AbstractUOW
 
 
 class MultipleAlchemyUOW(AbstractUOW):
     """
-    This UOW allows to work with multiple SQLAlchemy sessions.
+    MultipleUOW allows to work with multiple SQLAlchemy sessions.
 
     Usage::
 
@@ -29,7 +29,7 @@ class MultipleAlchemyUOW(AbstractUOW):
             }
 
 
-        class UOW(BaseMultipleUOW):
+        class UOW(MultipleAlchemyUOW):
             users: UserRepository
             music: MusicRepository
 
@@ -44,7 +44,7 @@ class MultipleAlchemyUOW(AbstractUOW):
             uow.users.add(User(name="Bob", age="18"))
             now.music.add(Music(name="Song", author="Bob"))
 
-            uow.commit()
+            await uow.commit()
 
     """  # noqa: E501
 

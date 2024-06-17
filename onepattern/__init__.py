@@ -1,19 +1,18 @@
-"""Scalable data access patterns for rapid API development, using SQLAlchemy & Pydantic."""
+"""One pattern for accessing data powered by SQLAlchemy & Pydantic."""
 
-__version__ = "0.1.9"
+__version__ = "0.2.0"
 
-from .alchemy import (
-    DeclarativeBase,
+from .models import (
+    AlchemyBase,
     AlchemyMixin,
     AlchemyEntity,
-    AlchemyUOW,
-    AlchemyRepository,
-    AlchemyService,
 )
+from .repository import AlchemyRepository
 from .schemas import MixinModel, Page, PageParams, EntityModel
+from .uow import AbstractUOW, AlchemyUOW, MultipleAlchemyUOW, FakeUOW
 
 __all__ = [
-    "DeclarativeBase",
+    "AlchemyBase",
     "MixinModel",
     "AlchemyMixin",
     "Page",
@@ -22,5 +21,7 @@ __all__ = [
     "EntityModel",
     "AlchemyRepository",
     "AlchemyUOW",
-    "AlchemyService",
+    "MultipleAlchemyUOW",
+    "AbstractUOW",
+    "FakeUOW",
 ]

@@ -4,7 +4,7 @@ from typing import Any, cast
 
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
-from onepattern.interfaces import AbstractUOW
+from .abstract import AbstractUOW
 
 
 class AlchemyUOW(AbstractUOW):
@@ -23,8 +23,7 @@ class AlchemyUOW(AbstractUOW):
         async with UOW(session_factory) as uow:
             # TRANSACTION IS BEGUN...
 
-            uow.users.add(User(name="Bob", age="18"))
-            uow.commit()
+            await uow.users.create(User(name="Bob", age="18"))
 
     """  # noqa: E501
 

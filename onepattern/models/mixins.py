@@ -3,7 +3,7 @@ import datetime
 from sqlalchemy import func, Identity
 from sqlalchemy.orm import mapped_column, Mapped
 
-from .base import DeclarativeBase
+from .base import AlchemyBase
 
 
 # https://docs.sqlalchemy.org/en/20/core/defaults.html
@@ -32,7 +32,7 @@ class HasTimestamp(AlchemyMixin):
     )
 
 
-class AlchemyEntity(DeclarativeBase, HasID, HasTimestamp):
+class AlchemyEntity(AlchemyBase, HasID, HasTimestamp):
     __abstract__ = True
 
 
@@ -42,5 +42,4 @@ class SoftDeletable(AlchemyMixin):
     )
 
     def delete(self) -> None:
-        # self.deleted_at = func.now()
-        self.deleted_at = datetime.datetime.utcnow()  # noqa
+        self.deleted_at = datetime.datetime.now(datetime.UTC)

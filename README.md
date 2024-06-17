@@ -1,16 +1,14 @@
 # OnePattern
 
-Scalable data access patterns for rapid API development, using SQLAlchemy & Pydantic.
+One pattern for accessing data powered by SQLAlchemy & Pydantic.
 
 ## Features
 
-- **Focus on business logic**: No need to write boilerplate code.
-- **Scalable**: You can use the provided abstractions and easily extend them.
-- **Portable**: Works with any database supported by SQLAlchemy.
-- **Intuitive**: Great editor support. Completion everywhere. Less time debugging.
-- **Easy**: Designed to be easy to use and learn. Less time reading docs.
-- **Asynchronous**: Built-in support for async/await.
-- **Use anywhere**: Use it with FastAPI, Aiogram, or any other framework.
+- **CRUD**: Create, read, update, delete operations.
+- **Pagination**: Built-in support for pagination & sorting.
+- **Validation**: Automatic validation using Pydantic models.
+- **Bulk operations**: Create, update, delete multiple records at once.
+- **Unit of work**: Transactional support for multiple operations.
 
 ## Requirements
 
@@ -25,15 +23,191 @@ OnePattern stands on the shoulders of giants:
 pip install onepattern
 ```
 
-## Concepts
+## Get Started
 
-* [Models](#1-models)
-* [Repositories](#2-repositories)
-* [Unit of Work](#3-unit-of-work)
-* [Services](#4-services)
-* [Use Cases](#5-use-cases)
+Let's write a simple CRUD API for managing users to demonstrate the power of OnePattern.
 
-## 1. Models
+Create models:
+
+```python
+from datetime import datetime
+
+from pydantic import BaseModel, ConfigDict
+from sqlalchemy import Identity
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+
+
+class Base(DeclarativeBase):
+    pass
+
+
+class User(Base):
+    __tablename__ = "users"
+
+    id: Mapped[int] = mapped_column(Identity(), primary_key=True)
+    name: Mapped[str]
+    age: Mapped[int]
+    salary: Mapped[int]
+    created_at: Mapped[datetime] = mapped_column(default=datetime.now)
+    updated_at: Mapped[datetime] = mapped_column(
+        default=datetime.now, onupdate=datetime.now
+    )
+
+
+class UserBase(BaseModel):
+    name: str
+    age: int
+    salary: int
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class UserCreate(UserBase):
+    pass
+
+
+class UserRead(UserBase):
+    id: int
+    created_at: datetime
+    updated_at: datetime
+```
+
+Create repository:
+
+```python
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
+
+from docs.gs_models import User, UserRead
+from onepattern import AlchemyRepository
+
+
+class UserRepository(AlchemyRepository[User, UserRead]):
+    model_type = User
+    schema_type = UserRead
+
+
+async_engine = create_async_engine("sqlite+aiosqlite://", echo=True)
+async_session = async_sessionmaker(async_engine)
+
+
+async def get_users() -> UserRepository:
+    async with async_session() as session:
+        async with session.begin():
+            yield UserRepository(session)
+```
+
+Use it in your app:
+
+```python
+from contextlib import asynccontextmanager
+from typing import Annotated, Any
+
+from fastapi import FastAPI, Depends, HTTPException
+
+from docs.gs_models import Base, UserCreate, UserRead
+from docs.gs_repository import UserRepository, async_engine, get_user_repo
+from onepattern import PageParams, Page
+
+
+@asynccontextmanager
+async def lifespan(_app: FastAPI) -> Any:
+    async with async_engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
+
+
+@app.post("/users/")
+async def create_user(
+        user: UserCreate, users: Annotated[UserRepository, Depends(get_user_repo)]
+) -> UserRead:
+    return await users.create(user)
+
+
+async def get_user_dep(
+        user_id: int, users: Annotated[UserRepository, Depends(get_user_repo)]
+) -> UserRead:
+    user = await users.get(user_id)
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
+
+
+@app.get("/users/{user_id}")
+async def get_user(
+        user: Annotated[UserRead, Depends(get_user_dep)],
+) -> UserRead:
+    return user
+
+
+@app.put("/users/{user_id}")
+async def update_user(
+        update: UserCreate,
+        user: Annotated[UserRead, Depends(get_user_dep)],
+        users: Annotated[UserRepository, Depends(get_user_repo)],
+) -> UserRead:
+    return await users.update(user.id, update)
+
+
+@app.delete("/users/{user_id}")
+async def delete_user(
+        user: Annotated[UserRead, Depends(get_user_dep)],
+        users: Annotated[UserRepository, Depends(get_user_repo)],
+) -> UserRead:
+    return await users.delete(user.id)
+
+
+@app.get("/users/")
+async def get_users(
+        params: Annotated[PageParams, Depends()],
+        users: Annotated[UserRepository, Depends(get_user_repo)],
+) -> Page[UserRead]:
+    return await users.get_many(params=params)
+
+```
+
+Run app:
+
+```bash
+uvicorn docs.gs_app:app --host 0.0.0.0 --port 8000 --reload
+```
+
+![img.png](docs/gs1.png)
+
+Pagination example:
+
+![img.png](docs/gs2.png)
+![img.png](docs/gs3.png)
+
+## Extending models
+
+OnePattern provides multiple ways to extend models:
+
+1. Use mixins to add commonly-used columns:
+
+```python
+from sqlalchemy.orm import DeclarativeBase, Mapped
+
+from onepattern.models import HasID, HasTimestamp
+
+
+class Base(DeclarativeBase):
+    pass
+
+
+class UserMixins(Base, HasID, HasTimestamp):
+    __tablename__ = "users"
+
+    name: Mapped[str]
+    age: Mapped[int]
+    salary: Mapped[int]
+```
+
+> Tip: See `onepattern.schemas` for similar pydantic mixins.
+
+2. Use pre-configured base model:
 
 ```python
 from datetime import datetime
@@ -41,159 +215,40 @@ from datetime import datetime
 from sqlalchemy import Identity
 from sqlalchemy.orm import Mapped, mapped_column
 
-from onepattern import DeclarativeBase, AlchemyEntity
-from onepattern.alchemy import SoftDeletable, HasID, HasTimestamp
+from onepattern import AlchemyBase
 
 
-# Classic way
-class User(DeclarativeBase):
+class UserAlchemyBase(AlchemyBase):
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(Identity(), primary_key=True)
-    email: Mapped[str] = mapped_column(unique=True, index=True)
-    password: Mapped[str]
+    name: Mapped[str]
+    age: Mapped[int]
+    salary: Mapped[int]
     created_at: Mapped[datetime] = mapped_column(default=datetime.now)
     updated_at: Mapped[datetime] = mapped_column(
         default=datetime.now, onupdate=datetime.now
     )
+```
+
+3. Use entity model with commonly-used columns:
+
+```python
+from sqlalchemy.orm import Mapped
+
+from onepattern import AlchemyEntity
 
 
-# Using AlchemyEntity
 class UserAlchemyEntity(AlchemyEntity):
     __tablename__ = "users"
 
-    email: Mapped[str] = mapped_column(unique=True, index=True)
-    password: Mapped[str]
-
-    # These columns will be added automatically
-    # id: Mapped[int] = mapped_column(Identity(), primary_key=True)
-    # created_at: Mapped[datetime] = mapped_column(default=datetime.now)
-    # updated_at: Mapped[datetime] = mapped_column(
-    #     default=datetime.now, onupdate=datetime.now
-    # )
-
-
-# Using mixins
-class UserMixins(HasID, HasTimestamp, SoftDeletable):
-    __tablename__ = "users"
-
-    email: Mapped[str] = mapped_column(unique=True, index=True)
-    password: Mapped[str]
-    # These columns will be added automatically
-    # id: Mapped[int]
-    # created_at: Mapped[datetime] = mapped_column(default=datetime.now)
-    # updated_at: Mapped[datetime] = mapped_column(
-    #     default=datetime.now, onupdate=datetime.now
-    # )
-    # deleted_at: Mapped[datetime | None] = None
-```
-
-## 2. Repositories
-
-```python
-from onepattern import AlchemyRepository
-from .models import User
-
-
-class UserRepository(AlchemyRepository[User]):
-    model_type = User
+    name: Mapped[str]
+    age: Mapped[int]
+    salary: Mapped[int]
+    # id, created_at and updated_at are added automatically
 
 ```
 
-## 3. Unit of Work
-
-```python
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
-
-from onepattern import AlchemyUOW
-from .repositories import UserRepository
-
-
-class UOW(AlchemyUOW):
-    users: UserRepository
-
-    async def on_open(self) -> None:
-        self.users = UserRepository(self.session)
-
-
-async_engine = create_async_engine("sqlite+aiosqlite:///memory")
-async_session = async_sessionmaker(async_engine)
-
-uow = UOW(async_session)
-```
-
-## 4. Services
-
-```python
-from onepattern import AlchemyService
-from .models import User
-from .uow import UOW
-
-
-class UserService(AlchemyService):
-    uow: UOW
-
-    async def create(self, email: str, password: str) -> User:
-        user = User(email=email, password=password)
-        self.uow.users.add(user)
-        await self.uow.commit()
-
-        return user
-
-    async def get(self, user_id: int) -> User | None:
-        return await self.uow.users.get(user_id)
-
-    async def get_by_email(self, email: str) -> User | None:
-        return await self.uow.users.get_by_where(where=[User.email == email])
-
-    async def create_many(self, users: list[User]) -> list[User]:
-        await self.uow.users.insert(*users)
-        await self.uow.commit()
-
-        return users
-
-    async def get_by_domain(self, domain: str) -> list[User]:
-        return await self.uow.users.get_many(where=[User.email.like(f"%@{domain}")])
-
-    # And more...
-```
-
-## 5. Use Cases
-
-```python
-from faker import Faker
-
-from .models import User
-from .service import UserService
-from .uow import uow
-
-fake = Faker()
-
-
-def get_users(domains: list[str], number: int = 10) -> list[User]:
-    users = [User(email=fake.email(domain=domain), password=fake.password()) for _ in range(number) for domain in
-             domains]
-    return users
-
-
-async def main():
-    async with uow:
-        service = UserService(uow)
-
-        user = await service.create("user@example.com", "qwerty12345")
-        print(user)
-
-        user = await service.get(user.id)
-        print(user)
-
-        user = await service.get_by_email("user@example.com")
-        print(user)
-
-        users = get_users(["gmail.com", "yahoo.com"])
-        await service.create_many(*users)
-
-        users = await service.get_by_domain("gmail.com")
-        print(users)
-```
+> Tip: See `onepattern.schemas.EntityModel` for similar pydantic base.
 
 **Made with love ❤️**
