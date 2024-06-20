@@ -4,6 +4,7 @@ from sqlalchemy import func, Identity
 from sqlalchemy.orm import mapped_column, Mapped
 
 from .base import AlchemyBase
+from .. import utils
 
 
 # https://docs.sqlalchemy.org/en/20/core/defaults.html
@@ -27,7 +28,7 @@ class HasTimestamp(AlchemyMixin):
     )
     updated_at: Mapped[datetime.datetime] = mapped_column(
         server_default=func.now(),
-        onupdate=func.now(),
+        onupdate=utils.naive_utc,
         sort_order=101,
     )
 

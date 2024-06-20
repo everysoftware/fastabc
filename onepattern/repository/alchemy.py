@@ -198,7 +198,7 @@ class AlchemyRepository(Generic[Model, Schema]):
         if not soft:
             await self.session.delete(instance)
         else:
-            instance.deleted_at = func.now()  # type: ignore[attr-defined]
+            instance.deleted_at = utils.naive_utc()  # type: ignore[attr-defined]
         await self.session.flush()
         return utils.instance_validate(instance, self.schema_type)
 

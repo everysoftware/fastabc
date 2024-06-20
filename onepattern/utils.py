@@ -1,3 +1,4 @@
+import datetime
 from typing import Any, overload, Iterable
 
 from pydantic import BaseModel
@@ -5,6 +6,10 @@ from sqlalchemy import inspect
 
 from onepattern.schemas import Page
 from onepattern.types import Model, Schema, ModelData, T
+
+
+def naive_utc() -> datetime.datetime:
+    return datetime.datetime.now(datetime.UTC)
 
 
 def to_dict(obj: ModelData) -> dict[str, Any]:
