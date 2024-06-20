@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from typing import Generic, TypeVar, Literal, cast
 
 from pydantic import Field, computed_field, BaseModel

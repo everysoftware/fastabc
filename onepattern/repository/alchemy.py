@@ -1,4 +1,4 @@
-from typing import Generic, Sequence, cast, Iterable, overload, Literal
+from typing import Generic, Sequence, cast, Iterable, overload, Literal, Any
 
 import sqlalchemy.exc
 from sqlalchemy import (
@@ -48,10 +48,7 @@ class AlchemyRepository(Generic[Model, Schema]):
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def create(
-        self,
-        data: ModelData,
-    ) -> Schema:
+    async def create(self, data: ModelData, **attrs: Any) -> Schema:
         """
         Create an instance in the database ::
 
@@ -59,7 +56,7 @@ class AlchemyRepository(Generic[Model, Schema]):
             user = await users.create(user_create)
 
         """  # noqa: E501
-        instance = self.model_type(**utils.to_dict(data))
+        instance = self.model_type(**utils.to_dict(data), **attrs)
         self.session.add(instance)
         await self.session.flush()
         return utils.instance_validate(instance, self.schema_type)
@@ -187,7 +184,7 @@ class AlchemyRepository(Generic[Model, Schema]):
         await self.session.flush()
         return utils.instance_validate(instance, self.schema_type)
 
-    async def delete(self, ident: ID) -> Schema:
+    async def delete(self, ident: ID, soft: bool = False) -> Schema:
         """
         Delete an instance from the database ::
 
@@ -198,7 +195,10 @@ class AlchemyRepository(Generic[Model, Schema]):
             instance = await self.session.get_one(self.model_type, ident)
         except sqlalchemy.exc.NoResultFound as e:
             raise OPNoResultFound from e
-        await self.session.delete(instance)
+        if not soft:
+            await self.session.delete(instance)
+        else:
+            instance.deleted_at = func.now()  # type: ignore[attr-defined]
         await self.session.flush()
         return utils.instance_validate(instance, self.schema_type)
 
@@ -266,8 +266,8 @@ class AlchemyRepository(Generic[Model, Schema]):
         Create many instances in the database ::
 
             users = [
-                User(name="Alice", age=20),
-                User(name="Bob", age=30),
+                UserCreate(name="Alice", age=20),
+                UserCreate(name="Bob", age=30),
             ]
 
             response = await users.create_many(*users, ret=True)
@@ -370,8 +370,6 @@ class AlchemyRepository(Generic[Model, Schema]):
         if idents and where:
             raise OPValueError("Provide idents or where clause, not both")
         if idents:
-            if not hasattr(self.model_type, "id"):
-                raise OPValueError("Model does not have an id attribute")
             where = [self.model_type.id.in_(idents)]  # type: ignore[attr-defined]
         stmt = delete(self.model_type)
         if where:

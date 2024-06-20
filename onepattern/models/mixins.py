@@ -27,7 +27,7 @@ class HasTimestamp(AlchemyMixin):
     )
     updated_at: Mapped[datetime.datetime] = mapped_column(
         server_default=func.now(),
-        onupdate=datetime.datetime.utcnow,  # noqa
+        onupdate=func.now(),
         sort_order=101,
     )
 
@@ -40,6 +40,3 @@ class SoftDeletable(AlchemyMixin):
     deleted_at: Mapped[datetime.datetime | None] = mapped_column(
         sort_order=102
     )
-
-    def delete(self) -> None:
-        self.deleted_at = datetime.datetime.now(datetime.UTC)
