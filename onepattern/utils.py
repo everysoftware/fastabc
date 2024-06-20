@@ -9,7 +9,7 @@ from onepattern.types import Model, Schema, ModelData, T
 
 
 def naive_utc() -> datetime.datetime:
-    return datetime.datetime.now(datetime.UTC)
+    return datetime.datetime.now(datetime.UTC).replace(tzinfo=None)
 
 
 def to_dict(obj: ModelData) -> dict[str, Any]:
