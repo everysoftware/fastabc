@@ -12,11 +12,13 @@ def naive_utc() -> datetime.datetime:
     return datetime.datetime.now(datetime.UTC).replace(tzinfo=None)
 
 
-def to_dict(obj: ModelData) -> dict[str, Any]:
+def to_dict(obj: ModelData | None) -> dict[str, Any]:
     if isinstance(obj, BaseModel):
         return obj.model_dump()
     elif isinstance(obj, dict):
         return obj
+    elif obj is None:
+        return {}
     raise ValueError(f"Cannot convert {obj} (type: {type(obj)}) to dict")
 
 

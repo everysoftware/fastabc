@@ -1,6 +1,6 @@
 """One pattern for accessing data powered by SQLAlchemy & Pydantic."""
 
-__version__ = "0.2.3"
+__version__ = "0.2.5"
 
 from .models import (
     AlchemyBase,

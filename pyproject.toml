@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "onepattern"
-version = "0.2.4"
+version = "0.2.5"
 description = "One pattern for accessing data powered by SQLAlchemy & Pydantic."
 authors = ["Ivan Stasevich <pravitel2015ify@gmail.com>"]
 readme = "README.md"
