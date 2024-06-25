@@ -171,18 +171,20 @@ class AlchemyRepository(Generic[Model, Schema]):
         )
         return utils.make_page(instances, self.schema_type)
 
-    async def update(self, ident: ID, data: ModelData) -> Schema:
+    async def update(
+        self, ident: ID, data: ModelData | None = None, **attrs: Any
+    ) -> Schema:
         """
         Update an instance in the database with given data ::
 
-            response = await users.update(1, {"name": "Alice"})
+            response = await users.update(1, name="Alice")
 
         """  # noqa: E501
         try:
             instance = await self.session.get_one(self.model_type, ident)
         except sqlalchemy.exc.NoResultFound as e:
             raise OPNoResultFound from e
-        utils.update_attrs(instance, data)
+        utils.update_attrs(instance, data, **attrs)
         await self.session.flush()
         return utils.instance_validate(instance, self.schema_type)
 

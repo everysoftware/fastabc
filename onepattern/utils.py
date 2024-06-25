@@ -22,10 +22,17 @@ def to_dict(obj: ModelData | None) -> dict[str, Any]:
     raise ValueError(f"Cannot convert {obj} (type: {type(obj)}) to dict")
 
 
-def update_attrs(obj: T, data: ModelData) -> T:
+def update_attrs(obj: T, data: ModelData | None = None, **attrs: Any) -> T:
     if isinstance(data, BaseModel):
-        data = data.model_dump(exclude_unset=True)
-    for name, value in data.items():
+        obj_dict = data.model_dump(exclude_unset=True)
+    elif isinstance(data, dict):
+        obj_dict = data
+    else:
+        raise ValueError(
+            f"Cannot update {obj} with {data} (type: {type(data)})"
+        )
+    obj_dict |= attrs
+    for name, value in obj_dict.items():
         setattr(obj, name, value)
     return obj
 

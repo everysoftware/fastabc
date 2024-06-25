@@ -1,7 +1,8 @@
 from enum import Enum
 from typing import Any, Self
+from uuid import UUID
 
-from sqlalchemy import BigInteger, Enum as SAEnum, MetaData
+from sqlalchemy import BigInteger, Enum as SAEnum, MetaData, Uuid
 from sqlalchemy.orm import (
     DeclarativeBase as SABase,
 )
@@ -9,7 +10,11 @@ from sqlalchemy.orm import (
 from onepattern import utils
 from onepattern.types import ModelData
 
-type_map = {int: BigInteger, Enum: SAEnum(Enum, native_enum=False)}
+type_map = {
+    int: BigInteger,
+    Enum: SAEnum(Enum, native_enum=False),
+    UUID: Uuid(as_uuid=False),
+}
 
 NAMING_CONVENTION = {
     "ix": "%(column_0_label)s_idx",
